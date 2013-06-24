@@ -2,6 +2,18 @@
 #include <algorithm>
 #include <iostream>
 
+/*
+	James Smaldon 24/06/2013
+
+	Experiments with move semantics.
+
+	Compile with: g++ -g -std=c++0x -fno-elide-constructors -o move moveSemantics.cpp
+
+	Tried compiling with clang but there is a compiler bug where the copy elision cannot be switched off, making
+	it hard to view the move behaviours
+*/
+
+
 class Str
 {
 	public:
