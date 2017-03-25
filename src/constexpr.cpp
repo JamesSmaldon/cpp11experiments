@@ -4,20 +4,13 @@
 
 	c++11 introduces the "constexpr" keyword, which allows the user to guarantee that the function or constructor is a
 	compile time constant.
-
-	Compile with: g++ -g -std=c++0x -o constexpr constexpr.cpp
 */
 
 #include <iostream>
+#include "constexpr.h"
 
-constexpr int MeaningOfLife (int a, int b) { return a * b; }
-
-const int meaningOfLife = MeaningOfLife(6,7);
-
-int main(int argc, char **argv)
+void constExpr()
 {
 	std::cout << "The meaning of life is: " << meaningOfLife << std::endl;
 	int lifeArr[MeaningOfLife(3,4)];
-
-	return 0;
 }

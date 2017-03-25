@@ -1,3 +1,5 @@
+#pragma once
+
 #include <cstring>
 #include <algorithm>
 #include <iostream>
@@ -8,9 +10,6 @@
 	Experiments with move semantics.
 
 	Compile with: g++ -g -std=c++0x -fno-elide-constructors -o move moveSemantics.cpp
-
-	Tried compiling with clang but there is a compiler bug where the copy elision cannot be switched off, making
-	it hard to view the move behaviours
 */
 
 
@@ -21,7 +20,8 @@ class Str
 			: data(nullptr)
 		{
 			size = strlen(p);
-			data = new char[size];
+			data = new char[size + 1];
+			data[size] = '\0';
 			memcpy(data, p, size);	
 			std::cout << "Constructed: " << this << " " << "(" << data << ")" << std::endl;
 		}
@@ -30,7 +30,8 @@ class Str
 			: data(nullptr)
 		{
 			size = other.size;
-			data = new char[size];
+			data = new char[size+1];
+			data[size] = '\0';
 			memcpy(data, other.data, size);
 			std::cout << "Copied: " << this << " " << "(" << data << ")" << std::endl;
 		}
@@ -76,9 +77,11 @@ class Str
 		size_t size;
 };
 
-Str operator+(const Str &lhs, const Str &rhs)
+inline Str operator+(const Str &lhs, const Str &rhs)
 {
-	char *newData = new char[lhs.size + rhs.size - 1];
+	int new_size = lhs.size + rhs.size;
+	char *newData = new char[new_size + 1];
+	memset(newData, '\0', new_size + 1);
 	strcat(newData, lhs.data);
 	strcat(newData, rhs.data);
 
@@ -87,7 +90,7 @@ Str operator+(const Str &lhs, const Str &rhs)
 	return tmp;
 }
 
-std::ostream &operator<<(std::ostream &str, const Str &s)
+inline std::ostream &operator<<(std::ostream &str, const Str &s)
 {
 	if (s.data == nullptr)
 	{
@@ -101,12 +104,12 @@ std::ostream &operator<<(std::ostream &str, const Str &s)
 	return str; 
 }
 
-void g(Str &s)
+inline void g(Str &s)
 {
 	std::cout << "lvalue g" << std::endl;
 }
 
-void g(Str &&s)
+inline void g(Str &&s)
 {
 	std::cout << "rvalue g" << std::endl;
 }
@@ -117,29 +120,4 @@ void f(T &&t)
 	g(std::forward<T>(t));	
 }
 
-
-int main(int argc, char **argv)
-{
-	Str test("test");
-	Str test2("test2");
-
-	//move assignment operator
-	Str test3 = test + test2;
-
-	std::cout << test3 << std::endl;
-
-	//this should call the copy constructor.
-	Str test4(test3);
-
-	//but this should call the move constructor.
-	Str test5(std::move(test4));
-
-	//and test4 should be null now.
-	std::cout << test4 << std::endl;
-
-	//should call lvalue g
-	f(test3);
-
-	//should call rvalue g
-	f(test3.copyMe());
-}
+void moveSemantics();

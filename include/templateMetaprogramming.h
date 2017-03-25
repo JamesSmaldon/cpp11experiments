@@ -1,3 +1,5 @@
+#pragma once
+
 #include <tuple>
 
 /*
@@ -73,8 +75,7 @@ using add_pointer = add_pointer_cpp11<T>;
  */
 template <typename... T>
 struct mp_list {};
-//e.g.
-mp_list<int, void, char *, float> test_mp_list;
+//e.g. mp_list<int, void, char *, float> test_mp_list;
 
 /*
  * A metafunction that renames list like template types to mp_lists, so that we can write our library against 
@@ -185,13 +186,4 @@ struct mp_transform_impl<F, L<T...>>
 template <template <class...> class F, class L>
 using mp_transform = typename mp_transform_impl<F, L>::type;
 
-
-#include <iostream>
-
-int main(int argc, char **argv)
-{
-    std::cout << mp_size<std::tuple<int, char, float>>::value << std::endl;
-    std::cout << mp_size_alt<std::tuple<char, float>>::value << std::endl;
-
-    return 0;
-}
+void templateMetaprogramming();
